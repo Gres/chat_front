@@ -2,7 +2,7 @@
   "name": "Test chat app for Best Way",
   "version": "0.0.1",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode development",
     "build": "vite build",
     "serve": "vite preview",
     "stable": "npm run build && npm run serve",

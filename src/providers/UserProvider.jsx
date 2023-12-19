@@ -5,9 +5,10 @@ const UserContext = createContext();
 export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState({id:1, name:'Admin'});
+    let initialUser = {id:new Date().getTime(), name:`Admin ${new Date().getTime().toString().slice(-4)}`};
+    const [currentUser, setCurrentUser] = useState(initialUser); // Состояние для текущего пользователя
 
-
+    // Функция для установки текущего пользователя
     const setUser = (user) => {
         setCurrentUser(user);
     };

@@ -9,21 +9,21 @@ const RoomDetails = () => {
     useEffect(() => {
         getRoomUsers(currentRoomId);
     }, [currentRoomId, getRoomUsers]);
-
-    const usersInRoom = roomUsers[currentRoomId] || [];
-
+    const usersInRoom = roomUsers || [];
     return (
         <List>
-            {usersInRoom.map(userId => (
-                <ListItem key={userId}>
+            {usersInRoom.length > 0
+                && usersInRoom.map(user => (
+                <ListItem key={user}>
                     <ListItemAvatar>
                         <Avatar>
                             <PersonIcon />
                         </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary={userId} />
+                    <ListItemText primary={user} />
                 </ListItem>
             ))}
+
         </List>
     );
 };

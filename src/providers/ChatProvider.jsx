@@ -1,141 +1,100 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import mockServer from './mockServer';
-import {useSnackbar} from "./SnackbarProvider";
+import { useSnackbar } from "./SnackbarProvider";
+import WSClient from "./wsClient";
 
 const ChatContext = createContext();
-
 export const useChat = () => useContext(ChatContext);
 
 export const ChatProvider = ({ children }) => {
+    const [wsClient, setWsClient] = useState(null);
     const [rooms, setRooms] = useState([]);
     const [currentRoomId, setCurrentRoomId] = useState(null);
     const [currentMessages, setCurrentMessages] = useState([]);
     const [roomUsers, setRoomUsers] = useState({});
     const [error, setError] = useState(null);
     const { openSnackbar } = useSnackbar();
+
     useEffect(() => {
-        loadRooms();
+        const client = new WSClient(import.meta.env?.VITE_WS_URL || 'ws://localhost:8089', {
+            onOpen: () => {
+            },
+            onClose: () => {
+            },
+            onRoomsUpdated: (updatedRooms) => {
+                console.log('Updating rooms state with:', updatedRooms);
+                setRooms(updatedRooms);
+            },
+            onMessagesUpdated: (updatedMessages) => {
+                setCurrentMessages(updatedMessages);
+            },
+            onMessageSent: (updatedMessages) => {
+                setCurrentMessages(updatedMessages);
+            },
+            onRoomUsersUpdated: (updatedRoomUsers) => {
+                setRoomUsers(updatedRoomUsers);
+            },
+            onRoomJoined: ({roomId}) => {
+                client.getRoomUsers(roomId);
+            },
+            onRoomCreated: ({roomId}) => {
+                client.getRooms();
+            },
+            onRoomLeft: ({roomId}) => {
+                client.getRoomUsers(roomId);
+            },
+            onError: (errorMsg) => {
+                setError(errorMsg);
+            },
+
+        });
+        setWsClient(client);
+
+
     }, []);
+
     useEffect(() => {
         if (error) {
             openSnackbar(error);
         }
     }, [error, openSnackbar]);
 
-    const loadRooms = async () => {
-        try {
-            const loadedRooms = await mockServer.getRooms();
-            setRooms(loadedRooms);
-        } catch (err) {
-            setError(err.message);
+    const getRooms = useCallback(() => {
+        wsClient && wsClient.getRooms();
+    }, [wsClient]);
+
+    const joinRoom = useCallback((roomId, userId) => {
+        wsClient && wsClient.joinRoom(roomId, userId);
+        setCurrentRoomId(roomId);
+    }, [wsClient]);
+
+    const leaveRoom = useCallback((roomId, userId) => {
+        wsClient && wsClient.leaveRoom(roomId, userId);
+        if (currentRoomId === roomId) {
+            setCurrentRoomId(null);
+            setCurrentMessages([]);
         }
-    };
+    }, [wsClient, currentRoomId]);
 
+    const createRoom = useCallback((roomName, userId) => {
+        wsClient && wsClient.createRoom(roomName, userId);
+    }, [wsClient]);
 
-    const getRooms = useCallback(async () => {
-        try {
-            const loadedRooms = await mockServer.getRooms();
-            setRooms(loadedRooms);
-        } catch (err) {
-            setError(err.message);
-        }
-    }, []);
+    const setRoomName = useCallback((roomId, newName) => {
+        wsClient && wsClient.setRoomName(roomId, newName);
+    }, [wsClient]);
 
+    const getRoomUsers = useCallback((roomId) => {
+        wsClient && wsClient.getRoomUsers(roomId);
+    }, [wsClient]);
 
+    const sendMessage = useCallback((roomId, userId, text) => {
+        wsClient && wsClient.sendMessageToRoom(roomId, userId, text);
+    }, [wsClient]);
 
+    const getMessages = useCallback((roomId) => {
+        wsClient && wsClient.getMessages(roomId);
+    }, [wsClient]);
 
-
-
-
-    const setRoomName = useCallback(async (roomId, newName) => {
-        try {
-            await mockServer.setRoomName(roomId, newName);
-            await getRooms();
-        } catch (err) {
-            setError(err.message);
-        }
-    }, [getRooms]);
-
-
-    const leaveRoom = useCallback(async (roomId, userId) => {
-        try {
-            await mockServer.leaveRoom(roomId, userId);
-            if (currentRoomId === roomId) {
-                setCurrentRoomId(null);
-                setCurrentMessages([]);
-            }
-        } catch (err) {
-            setError(err.message);
-        }
-    }, [currentRoomId]);
-
-
-    const getRoomUsers = useCallback(async (roomId) => {
-        try {
-            const users = await mockServer.getRoomUsers(roomId);
-            setRoomUsers(prev => ({ ...prev, [roomId]: users }));
-        } catch (err) {
-            setError(err.message);
-        }
-    }, []);
-
-    const getMessages = useCallback(async (roomId) => {
-        try {
-            const messages = await mockServer.getMessages(roomId);
-            setCurrentMessages(messages);
-        } catch (err) {
-            setError(err.message);
-        }
-    }, []);
-
-
-    const sendMessage = useCallback(async (roomId, userId, text) => {
-        try {
-            await mockServer.sendMessage(roomId, userId, text);
-            await getMessages(roomId);
-        } catch (err) {
-            setError(err.message);
-        }
-    }, [getMessages]);
-    const joinRoom = useCallback(async (roomId, userId) => {
-        try {
-            if (currentRoomId && currentRoomId !== roomId) {
-                await leaveRoom(currentRoomId, userId);
-            }
-            await mockServer.joinRoom(roomId, userId);
-            setCurrentRoomId(roomId);
-            await getMessages(roomId);
-        } catch (err) {
-            setError(err.message);
-        }
-    }, [currentRoomId, getMessages, leaveRoom]);
-
-    const createRoom = useCallback(async (roomName, userId) => {
-        try {
-
-            const newRoom = await mockServer.createRoom(roomName, userId);
-
-
-            setRooms(prevRooms => {
-                const roomIds = prevRooms.map(r => r.id);
-                if (!roomIds.includes(newRoom.id)) {
-                    return [...prevRooms, newRoom];
-                }
-                return prevRooms;
-            });
-
-
-            if (currentRoomId && currentRoomId !== newRoom.id) {
-                await leaveRoom(currentRoomId, userId);
-            }
-
-
-            await joinRoom(newRoom.id, userId);
-
-        } catch (err) {
-            setError(err.message);
-        }
-    }, [currentRoomId, joinRoom, leaveRoom]);
     return (
         <ChatContext.Provider value={{
             rooms,
@@ -156,3 +115,5 @@ export const ChatProvider = ({ children }) => {
         </ChatContext.Provider>
     );
 };
+
+export default ChatProvider;

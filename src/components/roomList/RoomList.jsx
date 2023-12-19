@@ -18,7 +18,7 @@ export default function RoomList() {
 
     return (
         <List>
-            {rooms.map(room => (
+            {rooms?.map(room => (
                 <ListItem key={room.id} button>
                     <ListItemIcon>
                         <HomeIcon />

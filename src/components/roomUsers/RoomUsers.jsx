@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
-import { useChat } from "../../providers/ChatProvider";
-import { List, ListItem, ListItemAvatar, Avatar, ListItemText } from '@mui/material';
+import React, {useEffect} from 'react';
+import {useChat} from "../../providers/ChatProvider";
+import {Avatar, List, ListItem, ListItemAvatar, ListItemText} from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 
 const RoomDetails = () => {
-    const { getRoomUsers, roomUsers, currentRoomId } = useChat();
+    const {getRoomUsers, roomUsers, currentRoomId} = useChat();
 
     useEffect(() => {
         getRoomUsers(currentRoomId);
@@ -14,15 +14,15 @@ const RoomDetails = () => {
         <List>
             {usersInRoom.length > 0
                 && usersInRoom.map(user => (
-                <ListItem key={user}>
-                    <ListItemAvatar>
-                        <Avatar>
-                            <PersonIcon />
-                        </Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary={user} />
-                </ListItem>
-            ))}
+                    <ListItem key={user.id}>
+                        <ListItemAvatar>
+                            <Avatar>
+                                <PersonIcon/>
+                            </Avatar>
+                        </ListItemAvatar>
+                        <ListItemText primary={user.username}/>
+                    </ListItem>
+                ))}
 
         </List>
     );

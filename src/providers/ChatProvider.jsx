@@ -1,18 +1,18 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { useSnackbar } from "./SnackbarProvider";
+import React, {createContext, useCallback, useContext, useEffect, useState} from 'react';
+import {useSnackbar} from "./SnackbarProvider";
 import WSClient from "./wsClient";
 
 const ChatContext = createContext();
 export const useChat = () => useContext(ChatContext);
 
-export const ChatProvider = ({ children }) => {
+export const ChatProvider = ({children}) => {
     const [wsClient, setWsClient] = useState(null);
     const [rooms, setRooms] = useState([]);
     const [currentRoomId, setCurrentRoomId] = useState(null);
     const [currentMessages, setCurrentMessages] = useState([]);
     const [roomUsers, setRoomUsers] = useState({});
     const [error, setError] = useState(null);
-    const { openSnackbar } = useSnackbar();
+    const {openSnackbar} = useSnackbar();
 
     useEffect(() => {
         const client = new WSClient(import.meta.env?.VITE_WS_URL || 'ws://localhost:8089', {
@@ -21,7 +21,6 @@ export const ChatProvider = ({ children }) => {
             onClose: () => {
             },
             onRoomsUpdated: (updatedRooms) => {
-                console.log('Updating rooms state with:', updatedRooms);
                 setRooms(updatedRooms);
             },
             onMessagesUpdated: (updatedMessages) => {

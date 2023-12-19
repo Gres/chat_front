@@ -43,7 +43,7 @@ class WSClient {
             this.onError && this.onError(error);
         };
         this.onOpen = () => {
-            this.getRooms(); // Получение комнат сразу после установления соединения
+            this.getRooms();
         };
         this.onRoomsUpdated = onRoomsUpdated || (() => {
         });
@@ -125,15 +125,6 @@ class WSClient {
         this.sendMessage('createRoom', {name, userId});
     }
 
-    // onRoomsUpdated = null;
-    // onMessagesUpdated = null;
-    // onRoomUsersUpdated = null;
-    // onRoomJoined = null;
-    // onRoomLeft = null;
-    // onRoomCreated = null;
-    // onRoomNameUpdated = null;
-    // onMessageSent = null;
-    // onOpen = null;
 
     setRoomName(roomId, newName) {
         console.log(`%c✏️ Setting room name: ${roomId} to ${newName}`, 'color: purple');

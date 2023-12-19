@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
-import { List, ListItem, ListItemIcon, ListItemText, Button, Typography } from '@mui/material';
+import React, {useEffect} from 'react';
+import {Button, List, ListItem, ListItemIcon, ListItemText, Typography} from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-import { useChat } from "../../providers/ChatProvider";
+import {useChat} from "../../providers/ChatProvider";
 import {useUser} from "../../providers/UserProvider";
 
 export default function RoomList() {
-    const { rooms, currentRoomId, getRooms, joinRoom } = useChat();
-    const { currentUser, setUser } = useUser();
+    const {rooms, currentRoomId, getRooms, joinRoom} = useChat();
+    const {currentUser, setUser} = useUser();
     const userId = currentUser ? currentUser.id : null;
     useEffect(() => {
         getRooms();
@@ -21,9 +21,9 @@ export default function RoomList() {
             {rooms?.map(room => (
                 <ListItem key={room.id} button>
                     <ListItemIcon>
-                        <HomeIcon />
+                        <HomeIcon/>
                     </ListItemIcon>
-                    <ListItemText primary={room.name} />
+                    <ListItemText primary={room.name}/>
                     {currentRoomId !== room.id && (
                         <Button
                             size="small"
@@ -35,7 +35,7 @@ export default function RoomList() {
                     )}
                     <Typography
                         variant="caption"
-                        sx={{ ml: 'auto', bgcolor: 'grey.300', borderRadius: 1, p: 0.5 }}
+                        sx={{ml: 'auto', bgcolor: 'grey.300', borderRadius: 1, p: 0.5}}
                     >
                         {room.players}/10
                     </Typography>

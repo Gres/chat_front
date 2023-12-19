@@ -1,14 +1,14 @@
 import React from 'react';
-import { Box, Typography, Button, Avatar } from '@mui/material';
+import {Avatar, Box, Button, Typography} from '@mui/material';
 import {useUser} from "../../providers/UserProvider";
 
 export default function UserPanel() {
-    const { currentUser } = useUser();
+    const {currentUser} = useUser();
 
     return (
-        <Box sx={{ display: 'flex', alignItems: 'center', mt: 4 }}>
-            <Avatar src="/placeholder.svg" />
-            <Box sx={{ ml: 2 }}>
+        <Box sx={{display: 'flex', alignItems: 'center', mt: 4}}>
+            <Avatar src="/placeholder.svg"/>
+            <Box sx={{ml: 2}}>
                 <Typography variant="h6">
                     {currentUser ? currentUser.name : 'Guest'}
                 </Typography>

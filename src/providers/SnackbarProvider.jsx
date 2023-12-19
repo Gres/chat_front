@@ -1,11 +1,11 @@
-import React, { createContext, useContext, useState } from 'react';
-import { Snackbar } from '@mui/material';
+import React, {createContext, useContext, useState} from 'react';
+import {Snackbar} from '@mui/material';
 
 const SnackbarContext = createContext();
 
 export const useSnackbar = () => useContext(SnackbarContext);
 
-export const SnackbarProvider = ({ children }) => {
+export const SnackbarProvider = ({children}) => {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
@@ -19,11 +19,11 @@ export const SnackbarProvider = ({ children }) => {
     };
 
     return (
-        <SnackbarContext.Provider value={{ openSnackbar, closeSnackbar }}>
+        <SnackbarContext.Provider value={{openSnackbar, closeSnackbar}}>
             {children}
             <Snackbar
                 open={snackbarOpen}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
                 autoHideDuration={3000}
                 onClose={closeSnackbar}
                 message={snackbarMessage}

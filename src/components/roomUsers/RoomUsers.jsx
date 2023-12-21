@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {useChat} from "../../providers/ChatProvider";
-import {Avatar, List, ListItem, ListItemAvatar, ListItemText} from '@mui/material';
-import PersonIcon from '@mui/icons-material/Person';
+import {List} from '@mui/material';
+import {RoomUser} from "./RoomUser";
 
 const RoomDetails = () => {
     const {getRoomUsers, roomUsers, currentRoomId} = useChat();
@@ -14,14 +14,7 @@ const RoomDetails = () => {
         <List>
             {usersInRoom.length > 0
                 && usersInRoom.map(user => (
-                    <ListItem key={user.id}>
-                        <ListItemAvatar>
-                            <Avatar>
-                                <PersonIcon/>
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary={user.username}/>
-                    </ListItem>
+                    <RoomUser key={user.id} user={user}/>
                 ))}
 
         </List>

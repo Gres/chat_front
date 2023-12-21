@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField} from '@mui/material';
 import {useChat} from "../../providers/ChatProvider";
-import {useUser} from "../../providers/UserProvider";
+import {useAuth} from "../../providers/AuthProvider";
 
 const CreateRoomDialog = ({open, onClose}) => {
     const [roomName, setRoomName] = useState('');
-    const {currentUser} = useUser();
+    const { currentUser } = useAuth();
     const {createRoom} = useChat();
 
     const handleCreate = async () => {

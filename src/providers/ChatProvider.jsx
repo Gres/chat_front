@@ -20,6 +20,15 @@ export const ChatProvider = ({children}) => {
             },
             onClose: () => {
             },
+            onActiveRoomUpdated: ({room}) => {
+                if (room && room.id !== currentRoomId) {
+                    setCurrentRoomId(room.id);
+                    client.getMessages(room.id);
+                    client.getRoomUsers(room.id);
+                }
+
+
+            },
             onRoomsUpdated: (updatedRooms) => {
                 setRooms(updatedRooms);
             },
@@ -33,12 +42,14 @@ export const ChatProvider = ({children}) => {
                 setRoomUsers(updatedRoomUsers);
             },
             onRoomJoined: ({roomId}) => {
+                client.getRooms();
                 client.getRoomUsers(roomId);
             },
             onRoomCreated: ({roomId}) => {
                 client.getRooms();
             },
             onRoomLeft: ({roomId}) => {
+                client.getRooms();
                 client.getRoomUsers(roomId);
             },
             onError: (errorMsg) => {

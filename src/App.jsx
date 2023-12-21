@@ -12,7 +12,6 @@ function App() {
 
     return (
         <SnackbarProvider>
-            <UserProvider>
                 <ChatProvider>
                     <Box sx={{display: 'flex', height: '100vh'}}>
                         <Sidebar onOpenCreateRoom={() => setCreateRoomOpen(true)}/>
@@ -23,7 +22,6 @@ function App() {
                         onClose={() => setCreateRoomOpen(false)}
                     />
                 </ChatProvider>
-            </UserProvider>
         </SnackbarProvider>
     );
 }

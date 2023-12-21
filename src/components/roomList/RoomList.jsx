@@ -2,11 +2,11 @@ import React, {useEffect} from 'react';
 import {Button, List, ListItem, ListItemIcon, ListItemText, Typography} from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import {useChat} from "../../providers/ChatProvider";
-import {useUser} from "../../providers/UserProvider";
+import {useAuth} from "../../providers/AuthProvider";
 
 export default function RoomList() {
     const {rooms, currentRoomId, getRooms, joinRoom} = useChat();
-    const {currentUser, setUser} = useUser();
+    const { currentUser } = useAuth();
     const userId = currentUser ? currentUser.id : null;
     useEffect(() => {
         getRooms();

@@ -5,6 +5,7 @@ class WSClient {
     onResponse = null;
 
     constructor(url, {
+        onActiveRoomUpdated,
         onRoomsUpdated,
         onMessagesUpdated,
         onRoomUsersUpdated,
@@ -44,6 +45,7 @@ class WSClient {
         };
         this.onOpen = () => {
             this.getRooms();
+            this.getActiveRoom();
         };
         this.onRoomsUpdated = onRoomsUpdated || (() => {
         });
@@ -61,8 +63,11 @@ class WSClient {
         });
         this.onMessageSent = onMessageSent || (() => {
         });
+        this.onActiveRoomUpdated = onActiveRoomUpdated || (() => {
+        });
 
         this.actionHandlers = {
+            getActiveRoom: this.onActiveRoomUpdated,
             getRooms: this.onRoomsUpdated,
             getMessages: this.onMessagesUpdated,
             getRoomUsers: this.onRoomUsersUpdated,
@@ -83,7 +88,8 @@ class WSClient {
     }
 
     sendMessage(type, data) {
-        const message = JSON.stringify({type, ...data});
+        const token = localStorage.getItem('id_token');
+        const message = JSON.stringify({ type, token, ...data });
         if (this.isConnected) {
             console.log(`%c⬆️ Sending message: ${type}`, 'color: blue', data);
             this.ws.send(message);
@@ -108,6 +114,11 @@ class WSClient {
     getRooms() {
         console.log('%c🏠 Requesting rooms', 'color: purple');
         this.sendMessage('getRooms', {});
+    }
+
+    getActiveRoom() {
+        console.log('%c🏠 Requesting active room', 'color: purple');
+        this.sendMessage('getActiveRoom', {});
     }
 
     joinRoom(roomId, userId) {

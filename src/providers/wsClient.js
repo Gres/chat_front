@@ -5,6 +5,7 @@ class WSClient {
     onResponse = null;
 
     constructor(url, {
+        onWhoAmI,
         onActiveRoomUpdated,
         onRoomsUpdated,
         onMessagesUpdated,
@@ -13,17 +14,50 @@ class WSClient {
         onRoomLeft,
         onRoomCreated,
         onRoomNameUpdated,
-        onMessageSent
+        onMessageSent,
+        onOpen,
+        onClose,
+        onError
     } = {}) {
         this.ws = new WebSocket(url);
         this.isConnected = false;
         this.messageQueue = [];
+        this.onOpen = onOpen || (() => {
 
+        }  );
+        this.onClose = onClose || (() => {
+
+        } );
+
+        this.onRoomsUpdated = onRoomsUpdated || (() => {
+        });
+        this.onMessagesUpdated = onMessagesUpdated || (() => {
+        });
+        this.onRoomUsersUpdated = onRoomUsersUpdated || (() => {
+        });
+        this.onRoomJoined = onRoomJoined || (() => {
+        });
+        this.onWhoAmI = onWhoAmI || (() => {
+
+        });
+        this.onRoomLeft = onRoomLeft || (() => {
+        });
+        this.onRoomCreated = onRoomCreated || (() => {
+        });
+        this.onRoomNameUpdated = onRoomNameUpdated || (() => {
+        });
+        this.onMessageSent = onMessageSent || (() => {
+        });
+        this.onActiveRoomUpdated = onActiveRoomUpdated || (() => {
+        });
+        this.onError = onError || (() => {
+
+        }   );
         this.ws.onopen = () => {
             console.log('%c🔗 WebSocket connection opened', 'color: green');
             this.isConnected = true;
             this.flushMessageQueue();
-            this.onOpen && this.onOpen();
+            this.onOpen && this.onOpen(this);
         };
 
         this.ws.onmessage = (event) => {
@@ -43,30 +77,10 @@ class WSClient {
             this.isConnected = false;
             this.onError && this.onError(error);
         };
-        this.onOpen = () => {
-            this.getRooms();
-            this.getActiveRoom();
-        };
-        this.onRoomsUpdated = onRoomsUpdated || (() => {
-        });
-        this.onMessagesUpdated = onMessagesUpdated || (() => {
-        });
-        this.onRoomUsersUpdated = onRoomUsersUpdated || (() => {
-        });
-        this.onRoomJoined = onRoomJoined || (() => {
-        });
-        this.onRoomLeft = onRoomLeft || (() => {
-        });
-        this.onRoomCreated = onRoomCreated || (() => {
-        });
-        this.onRoomNameUpdated = onRoomNameUpdated || (() => {
-        });
-        this.onMessageSent = onMessageSent || (() => {
-        });
-        this.onActiveRoomUpdated = onActiveRoomUpdated || (() => {
-        });
+
 
         this.actionHandlers = {
+
             getActiveRoom: this.onActiveRoomUpdated,
             getRooms: this.onRoomsUpdated,
             getMessages: this.onMessagesUpdated,
@@ -75,7 +89,9 @@ class WSClient {
             leaveRoom: this.onRoomLeft,
             createRoom: this.onRoomCreated,
             setRoomName: this.onRoomNameUpdated,
-            sendMessage: this.onMessageSent
+            sendMessage: this.onMessageSent,
+            whoAmI: this.onWhoAmI,
+            onError: this.onError
         };
     }
 
@@ -114,6 +130,11 @@ class WSClient {
     getRooms() {
         console.log('%c🏠 Requesting rooms', 'color: purple');
         this.sendMessage('getRooms', {});
+    }
+
+    whoAmI() {
+        console.log('%c👤 Requesting user info', 'color: purple');
+        this.sendMessage('whoAmI', {});
     }
 
     getActiveRoom() {

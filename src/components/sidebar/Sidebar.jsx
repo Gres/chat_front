@@ -11,13 +11,10 @@ export default function Sidebar({onOpenCreateRoom}) {
             <Box sx={{p: 3}}>
                 <Typography variant="h4" gutterBottom>Game Chat</Typography>
                 <UserPanel/>
-                <Box sx={{mt: 3, display: 'flex', justifyContent: 'center'}}>
-                    <Button variant="contained" onClick={onOpenCreateRoom}>Create Room</Button>
-                </Box>
+
             </Box>
             <RoomDetails/>
-            <Divider/>
-            <RoomList/>
+            <RoomList onOpenCreateRoom={onOpenCreateRoom}/>
         </Box>
     );
 }

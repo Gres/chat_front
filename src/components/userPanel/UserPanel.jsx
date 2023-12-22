@@ -3,9 +3,11 @@
     import {useAuth} from "../../providers/AuthProvider";
     import Identicon from 'identicon.js';
     import {generateHexHash} from "../../utils";
+    import {useChat} from "../../providers/ChatProvider";
 
     export default function UserPanel() {
         const { currentUser } = useAuth();
+        const {isConnected} = useChat();
         const [userAvatar, setUserAvatar] = useState(null);
 
         useEffect(() => {
@@ -23,7 +25,15 @@
                     <Typography variant="h6">
                         {currentUser ? currentUser['cognito:username'] : 'Guest'}
                     </Typography>
-                    <Button size="small" variant="outlined">Online</Button>
+                    <Typography variant="body2" sx={{color: 'grey.600'}}>
+                        {currentUser ? currentUser.email : ''}
+                    </Typography>
+                    <Box sx={{display: 'flex', alignItems: 'center', mt: 1}}>
+                        <Box sx={{width: 8, height: 8, borderRadius: '50%', bgcolor: isConnected ? 'success.main' : 'error.main'}}/>
+                        <Typography variant="caption" sx={{ml: 1}}>
+                            {isConnected ? 'Online' : 'Offline'}
+                        </Typography>
+                    </Box>
                 </Box>
             </Box>
         );

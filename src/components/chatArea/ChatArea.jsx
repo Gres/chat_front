@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Box, Button, Card, CardContent, CardHeader, TextField } from '@mui/material';
+import {Box, Button, Card, CardContent, CardHeader, TextField, Typography} from '@mui/material';
 import ChatMessage from "../chatMessage/ChatMessage";
 import { useChat } from '../../providers/ChatProvider';
 import { useAuth } from "../../providers/AuthProvider";
@@ -10,11 +10,8 @@ export default function ChatArea() {
     const { currentUser } = useAuth();
     const userId = currentUser ? currentUser.id : null;
     const currentRoomName = rooms?.find(room => room.id === currentRoomId)?.name || '';
-
-    // Ref для элемента, к которому будет происходить прокрутка
     const messagesEndRef = useRef(null);
 
-    // Функция для прокрутки к концу чата
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
@@ -37,15 +34,30 @@ export default function ChatArea() {
         }
     };
 
+    if (!currentRoomId) {
+        return (
+            <Box sx={{ flex: 1, p: 3 }}>
+                <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                    <CardHeader title="Chat" />
+                    <CardContent sx={{ flex: 1, overflowY: 'auto', p: 0 }}>
+                        <Box sx={{ p: 3 }}>
+                            <Typography variant="h6" align="center">
+                                Select a room to start chatting
+                            </Typography>
+                        </Box>
+                    </CardContent>
+                </Card>
+            </Box>
+        );
+    }
     return (
         <Box sx={{ flex: 1, p: 3 }}>
             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <CardHeader title={currentRoomName} />
-                <CardContent sx={{ flex: 1, overflowY: 'auto', p: 0 }}>
+                <CardHeader title={`Chat in ${currentRoomName}`} />
+                <CardContent sx={{ flex: 1, overflowY: 'auto', p: 3 }}>
                     {currentMessages.map((message) => (
                         <ChatMessage key={message.id} message={message} />
                     ))}
-                    {/* Элемент для прокрутки */}
                     <div ref={messagesEndRef} />
                 </CardContent>
                 <Box sx={{ p: 3, borderTop: 1, borderColor: 'grey.300' }}>

@@ -24,6 +24,13 @@ export default memo(function ChatMessage({message}) {
                     {message?.text}
                 </Box>
             </Box>
+            <Box sx={{ml: 'auto', textAlign: 'right'}}>
+                <Typography variant="caption" sx={{color: 'grey.600'}}>
+                    {message?.date?.slice(11, 16)}
+                </Typography>
+
+
+            </Box>
         </Box>
     );
 })

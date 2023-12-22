@@ -7,6 +7,7 @@ const CognitoRedirect = ( {children}) => {
     const navigate = useNavigate();
     let cognitoDomain = 'https://gamechat.auth.eu-north-1.amazoncognito.com';
     let cognitoClientId = '72nem5u2o9v5t5ce8vpvgjq2uq';
+    // let cognitoRedirectUri = 'https://d39ym3lkp9ttx.cloudfront.net/protected';
     let cognitoRedirectUri = 'http://localhost:5173/protected';
 
     const cognitoUrl =`${cognitoDomain}/login?response_type=token&client_id=${cognitoClientId}&redirect_uri=${cognitoRedirectUri}`;

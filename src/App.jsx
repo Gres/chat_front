@@ -9,7 +9,6 @@ import {UserProvider} from "./providers/UserProvider";
 
 function App() {
     const [isCreateRoomOpen, setCreateRoomOpen] = useState(false);
-
     return (
         <SnackbarProvider>
                 <ChatProvider>

@@ -18,7 +18,7 @@ export const ChatProvider = ({ children }) => {
     const currentUserIdRef = useRef(null);
     const currentRoomIdRef = useRef(null);
     const initializeWsClient = useCallback(() => {
-        const client = new WSClient(import.meta.env?.VITE_WS_URL || 'ws://localhost:8089', {
+        const client = new WSClient(import.meta.env?.VITE_WS_URL || 'wss://ws.sergeykamaltynov.link', {
             onOpen,
             onClose,
             onWhoAmI,
@@ -53,6 +53,7 @@ export const ChatProvider = ({ children }) => {
     }, []);
 
     const onRoomsUpdated = useCallback((updatedRooms) => {
+        debugger;
         setRooms(updatedRooms);
         console.log('🏠 Rooms updated', updatedRooms);
     }, [setRooms]);
@@ -76,12 +77,14 @@ export const ChatProvider = ({ children }) => {
 
     const onRoomJoined = useCallback(({ roomId, userId }) => {
         const currentId = currentUserIdRef.current;
+
         if (userId && userId === currentId) {
             console.log(`Me 👋 Joined room ${roomId}`);
             currentRoomIdRef.current = roomId; // Update the ref as well
             setCurrentRoomId(roomId);
             wsClient?.getMessages(roomId);
             wsClient?.getRoomUsers(roomId);
+            wsClient?.getRooms();
         } else {
             console.log(`User ${userId} 👋 Joined room ${roomId}`);
             wsClient?.getRoomUsers(roomId);
@@ -147,7 +150,7 @@ export const ChatProvider = ({ children }) => {
     }, [error, openSnackbar]);
 
     const getRooms = useCallback(() => {
-        wsClient?.getRooms();
+        wsClient.getRooms();
     }, [wsClient]);
 
     const joinRoom = useCallback((roomId, userId) => {
